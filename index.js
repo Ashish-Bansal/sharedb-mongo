@@ -205,7 +205,7 @@ ShareDbMongo.prototype._writeOp = function(collectionName, id, op, snapshot, cal
     var doc = shallowClone(op);
     doc.d = id;
     doc.o = snapshot._opLink;
-    opCollection.insertOne(doc, callback);
+    opCollection.insertOne(doc, { checkKeys: false }, callback);
   });
 };
 
@@ -221,7 +221,7 @@ ShareDbMongo.prototype._writeSnapshot = function(collectionName, id, snapshot, o
     if (err) return callback(err);
     var doc = castToDoc(id, snapshot, opLink);
     if (doc._v === 1) {
-      collection.insertOne(doc, function(err, result) {
+      collection.insertOne(doc, { checkKeys: false }, function(err, result) {
         if (err) {
           // Return non-success instead of duplicate key error, since this is
           // expected to occur during simultaneous creates on the same id
